@@ -13,11 +13,18 @@ const cartRoutes = require('./Controller/CartRoute');
 const orderRoutes = require('./Controller/OrderRoute');
 const reviewRoutes = require('./Controller/ReviewRoute');
 
-const app = express();
-const PORT = 5000;
-const JWT_SECRET = 'your_super_secret_key_123'; // Matches UserController
+require('dotenv').config();
 
-app.use(cors());
+const app = express();
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secret_key_123';
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:5000';
+
+app.use(cors({
+  origin: FRONTEND_URL,
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -25,9 +32,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
 passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID", // Replace with your Google Cloud Console ID
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "YOUR_GOOGLE_CLIENT_SECRET", // Replace with your Secret
-    callbackURL: "http://localhost:5000/api/auth/google/callback"
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: `${BACKEND_URL}/api/auth/google/callback`
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -55,7 +62,7 @@ app.get('/api/auth/google/callback',
       { expiresIn: '24h' }
     );
     // Redirect to React frontend with token and userID in URL
-    res.redirect(`http://localhost:5173/login-success?token=${token}&userID=${req.user.user_id}`);
+    res.redirect(`${FRONTEND_URL}/login-success?token=${token}&userID=${req.user.user_id}`);
   }
 );
 
