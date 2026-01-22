@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = 'your_super_secret_key_123'; // Must match the one in Main.js
+const JWT_SECRET = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkVjb21tZXJjZUFwcCIsImlhdCI6MTcwMzE2MDAwMH0xK2FzZGZnaGprbGxzcmU3MzJqaGdiZWh3NHI3YmhrOXdlMjNlMjNydTIzZjIz'; // Must match the one in Main.js
 
 const auth = (req, res, next) => {
   try {
